@@ -31,7 +31,7 @@ jobs:
       - run: |
           sudo apt-get update && sudo apt-get install --yes --no-install-recommends postgresql-client
       - run: |
-          psql -h localhost -U postgres -d example -c 'create table categories (id bigserial primary key, avatar varchar not null, title varchar not null unique); create table club (id bigserial primary key,title varchar not null,description varchar not null,image_url varchar,category_id int8 references categories(id)); create table child (id bigserial primary key,first_name varchar not null,last_name varchar not null,birth_date date);create table club_child(club_id int8 references club(id),child_id int8 references child(id));'
+          psql -h localhost -U postgres -d test -c 'create table categories (id bigserial primary key, avatar varchar not null, title varchar not null unique); create table club (id bigserial primary key,title varchar not null,description varchar not null,image_url varchar,category_id int8 references categories(id)); create table child (id bigserial primary key,first_name varchar not null,last_name varchar not null,birth_date date);create table club_child(club_id int8 references club(id),child_id int8 references child(id));'
         env:
           PGPASSWORD: root
       - uses: actions/checkout@v4
