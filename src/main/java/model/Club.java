@@ -5,6 +5,8 @@ import dao.DBUtil;
 import java.sql.SQLException;
 import java.util.List;
 
+import static dao.DBUtil.executeStatement;
+
 
 public class Club {
 
@@ -68,30 +70,30 @@ public class Club {
 
     public static void main(String[] args) throws SQLException {
         var cat = new model.Category("ksks", "ksksk");
-        //executeStatement("create table categories (id bigserial primary key, avatar varchar not null, title varchar not null)");
-//        DBUtil.executeStatement("""
-//        create table club (
-//        id bigserial primary key,
-//        title varchar not null,
-//        description varchar not null,
-//        image_url varchar,
-//        category_id int8 references categories(id))
-//        """
-//        );
-//        DBUtil.executeStatement("""
-//        create table child (
-//        id bigserial primary key,
-//        first_name varchar not null,
-//        last_name varchar not null,
-//        birth_date date)
-//        """
-//        );
+        executeStatement("create table if not exists categories  (id bigserial primary key, avatar varchar not null, title varchar not null)");
+        executeStatement("""
+        create table if not exists club (
+        id bigserial primary key,
+        title varchar not null,
+        description varchar not null,
+        image_url varchar,
+        category_id int8 references categories(id))
+        """
+        );
+        executeStatement("""
+        create table if not exists child  (
+        id bigserial primary key,
+        first_name varchar not null,
+        last_name varchar not null,
+        birth_date date)
+        """
+        );
 
-//        DBUtil.executeStatement("""
-//        create table club_child(
-//        club_id int8 references club(id),
-//        child_id int8 references child(id))
-//        """
-//        );
+        executeStatement("""
+        create table if not exists club_child (
+        club_id int8 references club(id),
+        child_id int8 references child(id))
+        """
+        );
     }
 }

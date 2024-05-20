@@ -14,9 +14,9 @@ jobs:
         image: postgres
 
         env:
-          POSTGRES_PASSWORD: mypass
-          POSTGRES_USER: myuser
-          POSTGRES_DB: example
+          POSTGRES_PASSWORD: root
+          POSTGRES_USER: postgres
+          POSTGRES_DB: test
 
         options: >-
           --health-cmd pg_isready
@@ -31,9 +31,9 @@ jobs:
       - run: |
           sudo apt-get update && sudo apt-get install --yes --no-install-recommends postgresql-client
       - run: |
-          psql -h localhost -U myuser -d example -c 'create table categories (id bigserial primary key, avatar varchar not null, title varchar not null unique); create table club (id bigserial primary key,title varchar not null,description varchar not null,image_url varchar,category_id int8 references categories(id)); create table child (id bigserial primary key,first_name varchar not null,last_name varchar not null,birth_date date);create table club_child(club_id int8 references club(id),child_id int8 references child(id));'
+          psql -h localhost -U postgres -d example -c 'create table categories (id bigserial primary key, avatar varchar not null, title varchar not null unique); create table club (id bigserial primary key,title varchar not null,description varchar not null,image_url varchar,category_id int8 references categories(id)); create table child (id bigserial primary key,first_name varchar not null,last_name varchar not null,birth_date date);create table club_child(club_id int8 references club(id),child_id int8 references child(id));'
         env:
-          PGPASSWORD: mypass
+          PGPASSWORD: root
       - uses: actions/checkout@v4
       - name: Setup Java 21
         uses: actions/setup-java@v4

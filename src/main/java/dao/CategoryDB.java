@@ -16,7 +16,7 @@ public class CategoryDB {
         this.conn = conn;
     }
 
-    public CategoryDB()  {
+    public CategoryDB() {
         try {
             conn = DBUtil.getConnection();
         } catch (SQLException e) {
@@ -24,16 +24,38 @@ public class CategoryDB {
         }
     }
 
+    //    public Category add(Category category) throws SQLException {
+//        String query = "insert into categories (avatar, title) values (?,?);";
+//        PreparedStatement pst = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+//        pst.setString(1, category.avatar());
+//        pst.setString(2, category.title());
+//        pst.executeUpdate();
+//        ResultSet rs = pst.getGeneratedKeys();
+//        rs.next();
+//        Long id = rs.getLong(1);
+//        return new Category(id, category.avatar(), category.title());
+//    }
     public Category add(Category category) throws SQLException {
-        String query = "insert into categories (avatar, title) values (?,?);";
-        PreparedStatement pst = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-        pst.setString(1, category.avatar());
-        pst.setString(2, category.title());
-        pst.executeUpdate();
-        ResultSet rs = pst.getGeneratedKeys();
-        rs.next();
-        Long id = rs.getLong(1);
-        return new Category(id, category.avatar(), category.title());
+
+        String checkQuery = "SELECT COUNT(*) FROM categories WHERE title = ?";
+        try (PreparedStatement checkStmt = conn.prepareStatement(checkQuery)) {
+            checkStmt.setString(1, category.title());
+            ResultSet rs = checkStmt.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                return null;
+            }
+        }
+
+        String query = "INSERT INTO categories (avatar, title) VALUES (?,?)";
+        try (PreparedStatement pst = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            pst.setString(1, category.avatar());
+            pst.setString(2, category.title());
+            pst.executeUpdate();
+            ResultSet rs = pst.getGeneratedKeys();
+            rs.next();
+            Long id = rs.getLong(1);
+            return new Category(id, category.avatar(), category.title());
+        }
     }
 
     public boolean update(Category category) throws SQLException {

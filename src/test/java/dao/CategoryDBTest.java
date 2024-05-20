@@ -3,7 +3,9 @@ package dao;
 import model.Category;
 import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import utils.DBUtil;
 
 import java.io.IOException;
@@ -13,12 +15,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CategoryDBTest {
 
-    private CategoryDB db = new CategoryDB();
 
-    @BeforeAll
-    public static void beforeAll() throws SQLException, IOException {
-        new DBUtil().executeFile("init.sql");
+    private static CategoryDB db;
+
+    @BeforeEach
+    public  void beforeAll() throws SQLException, IOException {
+        DBUtil dbUtil = new DBUtil();
+        dbUtil.executeFile("init.sql");
+        db = new CategoryDB();
     }
+
 
     @Test
     void incrementCategoryCountWhenAddNewCategory() throws SQLException {
@@ -26,7 +32,7 @@ class CategoryDBTest {
         var newCategory = new Category("avatar", "title");
         db.add(newCategory);
         int newCount = DBUtil.totalCount("categories");
-        assertEquals(newCount, oldCount+1, "the difference between two numbers");
+        assertEquals(newCount, oldCount + 1, "the difference between two numbers");
     }
 
     @Test

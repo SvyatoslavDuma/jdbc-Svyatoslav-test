@@ -15,11 +15,11 @@ public class DBUtil {
 
 
     public static Connection getConnection() throws SQLException {
-//        ClassLoader classLoader = DBUtil.class.getClassLoader();
-//        URL resource = classLoader.getResource("db.properties");
-//        if (resource == null) {
-//            throw new IllegalArgumentException("file db.properties not found! ");
-//        } else {
+        ClassLoader classLoader = DBUtil.class.getClassLoader();
+        URL resource = classLoader.getResource("db.properties");
+        if (resource == null) {
+            throw new IllegalArgumentException("file db.properties not found! ");
+        } else {
 
             String configFile = "src/main/resources/db.properties";
 
@@ -27,7 +27,7 @@ public class DBUtil {
             HikariDataSource ds = new HikariDataSource(cfg);
 
             return ds.getConnection();
-//        }
+        }
     }
 
     public static int executeStatement(String query) throws SQLException {
