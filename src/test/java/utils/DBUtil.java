@@ -11,9 +11,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBUtil {
+//    public static Connection getConnection() throws SQLException {
+//        return DriverManager
+//                .getConnection("jdbc:postgresql://localhost:5432/test", "postgres", "root");
+//    }
     public static Connection getConnection() throws SQLException {
-        return DriverManager
-                .getConnection("jdbc:postgresql://localhost:5432/test", "postgres", "root");
+        String url = System.getenv("DB_URL");
+        String user = System.getenv("DB_USERNAME");
+        String password = System.getenv("DB_PASSWORD");
+        if (url == null || user == null || password == null) {
+            throw new SQLException("Database connection details not provided in environment variables.");
+        }
+        return DriverManager.getConnection(url, user, password);
     }
 
     public static int executeStatement(String query) throws SQLException {
