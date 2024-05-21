@@ -82,18 +82,9 @@ jobs:
           name: jacoco-report
           path: '**/target/site/jacoco/'
 
-      # Install GitHubActions module for PowerShell
-      - name: Install GitHubActions module
-        run: |
-          Install-Module -Name GitHubActions -Scope CurrentUser -Force
-        shell: pwsh
-
-      # Publish test coverage results
-      - name: Publish test coverage results
-        uses: PavanMudigonda/jacoco-reporter@v2.5
-        if: success() || failure()
+      # Use an alternative action for Jacoco report summary
+      - name: Jacoco Summary
+        uses: scacap/action-surefire-report@v1
         with:
-          coverage_results_path: 'target/site/jacoco/jacoco.xml'
-          coverage_report_title: 'Test coverage results'
-          coverage_report_name: 'Test coverage results'
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          junit_report_paths: '**/target/surefire-reports/TEST-*.xml'
+          jacoco_report_paths: '**/target/site/jacoco/jacoco.xml'
