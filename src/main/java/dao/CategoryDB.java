@@ -24,7 +24,7 @@ public class CategoryDB {
         }
     }
 
-    //    public Category add(Category category) throws SQLException {
+//        public Category add(Category category) throws SQLException {
 //        String query = "insert into categories (avatar, title) values (?,?);";
 //        PreparedStatement pst = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 //        pst.setString(1, category.avatar());
