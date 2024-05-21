@@ -28,6 +28,10 @@ jobs:
 
     steps:
       # run steps required in the workflow
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GH_TOKEN }}
       - run: |
           sudo apt-get update && sudo apt-get install --yes --no-install-recommends postgresql-client
       - run: |
