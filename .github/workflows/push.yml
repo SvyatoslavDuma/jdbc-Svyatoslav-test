@@ -12,12 +12,10 @@ jobs:
     services:
       postgres:
         image: postgres
-
         env:
           POSTGRES_PASSWORD: root
           POSTGRES_USER: postgres
           POSTGRES_DB: test
-
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -27,38 +25,56 @@ jobs:
           - 5432:5432
 
     steps:
-      # run steps required in the workflow
+      # Checkout the code
       - name: Checkout code
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.GH_TOKEN }}
-      - run: |
-          sudo apt-get update && sudo apt-get install --yes --no-install-recommends postgresql-client
-      - run: |
-          psql -h localhost -U postgres -d test -c 'create table categories (id bigserial primary key, avatar varchar not null, title varchar not null unique); create table club (id bigserial primary key,title varchar not null,description varchar not null,image_url varchar,category_id int8 references categories(id)); create table child (id bigserial primary key,first_name varchar not null,last_name varchar not null,birth_date date);create table club_child(club_id int8 references club(id),child_id int8 references child(id));'
+
+      # Install PostgreSQL client
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install --yes --no-install-recommends postgresql-client
+
+      # Create database tables
+      - name: Create database tables
+        run: |
+          psql -h localhost -U postgres -d test -c '
+          CREATE TABLE categories (id BIGSERIAL PRIMARY KEY, avatar VARCHAR NOT NULL, title VARCHAR NOT NULL UNIQUE); 
+          CREATE TABLE club (id BIGSERIAL PRIMARY KEY, title VARCHAR NOT NULL, description VARCHAR NOT NULL, image_url VARCHAR, category_id INT8 REFERENCES categories(id)); 
+          CREATE TABLE child (id BIGSERIAL PRIMARY KEY, first_name VARCHAR NOT NULL, last_name VARCHAR NOT NULL, birth_date DATE);
+          CREATE TABLE club_child (club_id INT8 REFERENCES club(id), child_id INT8 REFERENCES child(id));'
         env:
           PGPASSWORD: root
-      - uses: actions/checkout@v4
+
+      # Setup Java
       - name: Setup Java 21
         uses: actions/setup-java@v4
         with:
           java-version: 21
           distribution: 'temurin'
           cache: 'maven'
+
+      # Run tests with Maven
       - name: Test with Maven
         run: mvn clean test
         env:
           DB_URL: jdbc:postgresql://localhost:5432/test
           DB_USERNAME: postgres
           DB_PASSWORD: root
+
+      # Generate Jacoco report
       - name: Jacoco report generate
         if: success() || failure()
-        run: mvn jacoco:report 
+        run: mvn jacoco:report
+
+      # Publish Test Report
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v2
-        if: success() || failure() # always run even if the previous step fails
+        if: success() || failure()
         with:
           report_paths: '**/target/surefire-reports/TEST-*.xml'
+
+      # Upload Jacoco Report
       - name: Upload Jacoco Report
         uses: actions/upload-artifact@v2
         if: success() || failure()
@@ -66,6 +82,7 @@ jobs:
           name: jacoco-report
           path: '**/target/site/jacoco/'
 
+      # Publish test coverage results
       - name: Publish test coverage results
         uses: PavanMudigonda/jacoco-reporter@v2.5
         if: success() || failure()
@@ -74,4 +91,3 @@ jobs:
           coverage_report_title: 'Test coverage results'
           coverage_report_name: 'Test coverage results'
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
