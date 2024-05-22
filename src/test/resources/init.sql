@@ -11,3 +11,4 @@ insert into categories (title, avatar) values ('Old Category', 'data:image/png;b
 insert into categories (title, avatar) values ('For Delete Category', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII');
 insert into categories (title, avatar) values ('Unique Category', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII');
 insert into categories (title, avatar) values ('Second unique Category', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII');
+INSERT INTO child (first_name, last_name, birth_date) VALUES ('John', 'Doe', '2010-01-01'), ('Jane', 'Doe', '2012-05-05');
